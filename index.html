@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+    <button class="Screen">Take screenshot</button>
+
+    <img src="" alt="no nie ma" class="cos" />
+    <script>
+      let socket = io();
+
+      const img = document.querySelector(".cos");
+      const btn = document.querySelector(".Screen");
+
+      socket.on("refresh", (data) => {
+        img.src = `data:image/jpg;base64, ${data}`;
+      });
+
+      const takeScreenShot = () => {
+        socket.emit("takeScreenShot", "ee");
+      };
+
+      btn.addEventListener("click", takeScreenShot);
+
+      const IntervalId = setInterval(() => {
+        takeScreenShot();
+      }, 100);
+
+      const getImage = async () => {
+        const data = await fetch("http://localhost:8080/api");
+        const image = await data.json();
+        img.src = `data:image/jpg;base64, ${image.Image}`;
+      };
+      getImage();
+    </script>
+  </body>
+</html>
