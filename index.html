@@ -8,36 +8,60 @@
   </head>
   <body>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-
-    <button class="Screen">Take screenshot</button>
+    <main class="container">
+      <nav class="menu">
+        <button class="Start">Start stream</button>
+        <button class="Stop">Stop stream</button>
+      </nav>
+    </main>
 
     <img src="" alt="no nie ma" class="cos" />
     <script>
       let socket = io();
 
+      let IntervalId; // Hold main loop(setInterval) ID
+      const menu = document.querySelector(".menu");
       const img = document.querySelector(".cos");
-      const btn = document.querySelector(".Screen");
+      const startBtn = document.querySelector(".Start");
+      const stoptBtn = document.querySelector(".Stop");
+
+      socket.on("DispalyData", ([...data]) => {
+        console.log(data[0]);
+        data.forEach((display, i) => {
+          const displayBtn = document.createElement("button");
+          displayBtn.innerText = `Screen ${i + 1}`;
+          displayBtn.addEventListener("click", () => {
+            console.log(display);
+            socket.emit("ChangeDisplay", display.id);
+          });
+          menu.appendChild(displayBtn);
+          console.log(i);
+        });
+      });
 
       socket.on("refresh", (data) => {
         img.src = `data:image/jpg;base64, ${data}`;
       });
 
+      //start stream(loop) from desktop
+      const startStream = () => {
+        //Stream loop
+        IntervalId = setInterval(() => {
+          takeScreenShot();
+        }, 100);
+      };
+
+      const stopStream = () => {
+        console.log("Stop");
+        clearInterval(IntervalId);
+      };
+
       const takeScreenShot = () => {
         socket.emit("takeScreenShot", "ee");
       };
 
-      btn.addEventListener("click", takeScreenShot);
-
-      const IntervalId = setInterval(() => {
-        takeScreenShot();
-      }, 100);
-
-      const getImage = async () => {
-        const data = await fetch("http://localhost:8080/api");
-        const image = await data.json();
-        img.src = `data:image/jpg;base64, ${image.Image}`;
-      };
-      getImage();
+      startBtn.addEventListener("click", startStream);
+      stoptBtn.addEventListener("click", stopStream);
     </script>
   </body>
 </html>

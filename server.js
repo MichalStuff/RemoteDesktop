@@ -18,11 +18,8 @@ app.use(cors({
   origin : '*'
 }));
 
-screenshot.listDisplays().then(displays =>{
-  // console.log(displays)
-});
-
 let Image
+let CURRENT_DISPALY = null;
 
 screenshot({format : 'jpg'}).then((img)=>{
   // console.log(img);
@@ -38,14 +35,18 @@ app.get('/', (req, res)=>{
   res.sendFile(path.join(__dirname, '/index.html'));
 });
 
-app.get('/api',(req,res)=>{
-  res.json({Image: Image})
-});
-
 io.on('connection',(socket)=>{
   console.log("New User Connected");
+  screenshot.listDisplays().then(displays =>{
+    socket.emit("DispalyData", displays);
+  });
+
+  socket.on("ChangeDisplay",(data)=>{
+    CURRENT_DISPALY = data;
+  });
+
   socket.on("takeScreenShot",(data)=>{
-    screenshot({format : 'jpg'}).then((img)=>{
+    screenshot({format : 'jpg', screen : CURRENT_DISPALY}).then((img)=>{
       fs.writeFileSync('screemshoot.jpg',img);
       Image = img.toString('base64')
       socket.emit("refresh", Image);
