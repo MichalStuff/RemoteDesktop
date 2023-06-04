@@ -25,7 +25,25 @@ const Screen = () => {
   }, []);
 
   return (
-    <StyledScreen>
+    <StyledScreen
+      onClick={(e) => {
+        console.log(
+          `X : ${e.clientX - e.target.offsetLeft} Y : ${
+            e.clientY - e.target.offsetTop + 1
+          }`
+        );
+        console.log(
+          `Width : ${e.target.clientWidth} Height : ${e.target.clientHeight}`
+        );
+        const MouseData = {
+          X: e.clientX - e.target.offsetLeft,
+          Y: e.clientY - e.target.offsetTop + 1,
+          Width: e.target.clientWidth,
+          Height: e.target.clientHeight,
+        };
+        socket.emit("MouseClick", MouseData);
+      }}
+    >
       <Image src={image} alt={"Destop Screen"} />
     </StyledScreen>
   );

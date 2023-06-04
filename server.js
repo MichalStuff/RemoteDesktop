@@ -7,6 +7,7 @@ const path = require('path');
 const screenshot = require('screenshot-desktop');
 const fs = require('fs');
 const http = require(`http`);
+const robot = require('robotjs');
 const server = http.Server(app);
 const io = require('socket.io')(server,{
   cors: {
@@ -19,7 +20,9 @@ app.use(cors({
 }));
 
 let Image
-let CURRENT_DISPALY = null;
+let CURRENT_DISPALY = 0;
+let Displays = null;
+
 
 screenshot({format : 'jpg'}).then((img)=>{
   // console.log(img);
@@ -38,6 +41,16 @@ app.get('/', (req, res)=>{
 io.on('connection',(socket)=>{
   console.log("New User Connected");
   screenshot.listDisplays().then(displays =>{
+    displays.sort((a,b)=>{
+      if ( a.id < b.id ){
+        return -1;
+      }
+      if ( a.id > b.id ){
+        return 1;
+      }
+      return 0;
+    })
+    Displays= displays;
     socket.emit("DispalyData", displays);
   });
 
@@ -45,8 +58,21 @@ io.on('connection',(socket)=>{
     CURRENT_DISPALY = data;
   });
 
+  socket.on("MouseClick",(data)=>{
+    console.log(data);
+    // const ratio = {X :  robot.getScreenSize().width /data.Width , Y : robot.getScreenSize().height / data.Height}
+    const ratio = {X :  Displays[CURRENT_DISPALY].width /data.Width , Y : Displays[CURRENT_DISPALY].height / data.Height}
+    robot.moveMouse(data.X * ratio.X, data.Y * ratio.Y)
+    // robot.moveMouse(-1920,1063);
+    robot.mouseClick("left");
+    console.log(Displays);
+    // console.log(Displays[CURRENT_DISPALY]);
+    console.log(ratio);
+    
+  });
+
   socket.on("takeScreenShot",(data)=>{
-    screenshot({format : 'jpg', screen : CURRENT_DISPALY}).then((img)=>{
+    screenshot({format : 'jpg', screen : Displays[CURRENT_DISPALY].id || null }).then((img)=>{
       fs.writeFileSync('screemshoot.jpg',img);
       Image = img.toString('base64')
       socket.emit("refresh", Image);

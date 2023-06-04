@@ -20,7 +20,9 @@ const Menu = () => {
 
   const [displays, setDisplays] = useState([]);
 
-  useEffect(() => {}, [displays]);
+  useEffect(() => {
+    console.log(displays);
+  }, [displays]);
 
   const ShowDisplays = () => {
     return displays.map((display, index) => {
@@ -28,7 +30,8 @@ const Menu = () => {
         <Button
           key={index}
           handler={() => {
-            socket.emit("ChangeDisplay", display.id);
+            // socket.emit("ChangeDisplay", display.id);
+            socket.emit("ChangeDisplay", index);
           }}
         >
           Display {index + 1}
