@@ -22,7 +22,9 @@ app.use(cors({
 let Image
 let CURRENT_DISPALY = 0;
 let Displays = null;
+let MAIN_SCREEN = null;
 
+console.log(screenshot);
 
 screenshot({format : 'jpg'}).then((img)=>{
   // console.log(img);
@@ -51,6 +53,9 @@ io.on('connection',(socket)=>{
       return 0;
     })
     Displays= displays;
+    MAIN_SCREEN = Displays.findIndex( disp => disp.left === 0);
+    CURRENT_DISPALY = MAIN_SCREEN;
+    console.log("MAIN SCREEN : ", MAIN_SCREEN);
     socket.emit("DispalyData", displays);
   });
 
@@ -60,16 +65,22 @@ io.on('connection',(socket)=>{
 
   socket.on("MouseClick",(data)=>{
     console.log(data);
-    // const ratio = {X :  robot.getScreenSize().width /data.Width , Y : robot.getScreenSize().height / data.Height}
     const ratio = {X :  Displays[CURRENT_DISPALY].width /data.Width , Y : Displays[CURRENT_DISPALY].height / data.Height}
-    robot.moveMouse(data.X * ratio.X, data.Y * ratio.Y)
-    // robot.moveMouse(-1920,1063);
-    robot.mouseClick("left");
-    console.log(Displays);
-    // console.log(Displays[CURRENT_DISPALY]);
-    console.log(ratio);
-    
-  });
+    if(Displays[CURRENT_DISPALY].left < 0){
+      robot.moveMouse(data.X * ratio.X - Displays[CURRENT_DISPALY].width, data.Y * ratio.Y + Displays[CURRENT_DISPALY].top);
+      console.log(data.X * ratio.X - Displays[CURRENT_DISPALY].width, data.Y * ratio.Y + Displays[CURRENT_DISPALY].top);
+    }else{
+      if(Displays[MAIN_SCREEN].width == Displays[CURRENT_DISPALY].left){
+        robot.moveMouse(Displays[MAIN_SCREEN].width + data.X * ratio.X, data.Y * ratio.Y + Displays[CURRENT_DISPALY].top);
+      }else{
+        robot.moveMouse(data.X * ratio.X, data.Y * ratio.Y + Displays[CURRENT_DISPALY].top);
+      }
+
+    } 
+          robot.mouseClick("left"); 
+          console.log(Displays);
+          console.log(ratio); 
+  }); 
 
   socket.on("takeScreenShot",(data)=>{
     screenshot({format : 'jpg', screen : Displays[CURRENT_DISPALY].id || null }).then((img)=>{
