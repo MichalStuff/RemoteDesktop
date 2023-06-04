@@ -1,4 +1,4 @@
-PORT = process.env.PORT || 8080
+PORT = process.env.VITE_PORT || 8080
 
 const express = require('express');
 var cors = require('cors');
