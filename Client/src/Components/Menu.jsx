@@ -7,6 +7,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 
 import DesktopLogo from "../assets/desktop.svg";
+import { FaPlayCircle } from "react-icons/fa";
+import { FaStopCircle } from "react-icons/fa";
 
 const StyledMenu = styled.nav`
   position: absolute;
@@ -32,6 +34,7 @@ const Menu = () => {
 
   useEffect(() => {
     console.log(displays);
+    console.log(typeof AiOutlinePlayCircle);
   }, [displays]);
 
   useEffect(() => {
@@ -85,7 +88,7 @@ const Menu = () => {
   return (
     <StyledMenu>
       <Button handler={handleStream}>
-        {streamStatus ? "Stop Stream" : "Start Stream"}
+        {streamStatus ? <FaStopCircle /> : <FaPlayCircle />}
       </Button>
       {ShowDisplays()}
     </StyledMenu>
