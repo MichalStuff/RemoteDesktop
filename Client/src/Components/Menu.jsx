@@ -57,7 +57,7 @@ const Menu = ({ streamStatus, handleStream }) => {
       intervalId = setInterval(() => {
         console.log("Streaming");
         takeScreenShot();
-      }, 100);
+      }, 50);
     }
     return () => {
       console.log("Stop");

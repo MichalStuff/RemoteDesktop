@@ -25,7 +25,6 @@ const Screen = ({ streamStatus }) => {
   }, []);
 
   useEffect(() => {
-    console.log(streamStatus);
     if (streamStatus === false) {
       setTimeout(() => {
         setImage(defaultImage);
@@ -53,15 +52,19 @@ const Screen = ({ streamStatus }) => {
     }
   };
   const handleKeyboard = (e) => {
-    const letters = /^[A-Za-z0-9]$/gm;
-    if (letters) {
-      socket.emit("letter", e.key);
-    }
-    console.log(e.key);
     e.keyCode === 50 ? null : e.preventDefault();
-    // if (streamStatus) {
-    //   socket.emit("KeyDown", e.key);
-    // }
+    if (streamStatus) {
+      const letters = /^[A-Za-z0-9]$/gm;
+      if (letters.test(e.key)) {
+        let str = e.key;
+        socket.emit("letter", str.toLowerCase());
+        console.log("Letter : ", str);
+      } else {
+        let str = e.key;
+        socket.emit("KeyDown", str.toLowerCase());
+        console.log("Sign : ", str.toLowerCase());
+      }
+    }
   };
 
   return (

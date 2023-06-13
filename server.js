@@ -82,13 +82,12 @@ io.on('connection',(socket)=>{
           console.log(ratio); 
   }); 
   
-  // socket.on("KeyDown",(data)=>{
-  //   // robot.keyTap(data);
-  //   robot.typeString(data);
-  // });
+  socket.on("KeyDown",(data)=>{
+    robot.keyTap(data);
+  });
   socket.on("letter",(data)=>{
     robot.typeString(data);
-  })
+  });
   socket.on("takeScreenShot",(data)=>{
     screenshot({format : 'jpg', screen : Displays[CURRENT_DISPALY].id || null }).then((img)=>{
       fs.writeFileSync('screemshoot.jpg',img);
