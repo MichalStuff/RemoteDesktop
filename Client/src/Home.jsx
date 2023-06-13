@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Menu from "./Components/Menu";
 import Screen from "./Components/Screen";
 import styled from "styled-components";
@@ -12,10 +13,15 @@ const StyledContainer = styled.div`
 `;
 
 export const Home = () => {
+  const [streamStatus, setStreamStatus] = useState(false);
+
+  const handleStream = () => {
+    setStreamStatus((prev) => !prev);
+  };
   return (
     <StyledContainer>
-      <Menu />
-      <Screen />
+      <Menu streamStatus={streamStatus} handleStream={handleStream} />
+      <Screen streamStatus={streamStatus} />
     </StyledContainer>
   );
 };

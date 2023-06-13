@@ -13,29 +13,43 @@ import { FaStopCircle } from "react-icons/fa";
 const StyledMenu = styled.nav`
   position: absolute;
   margin: 0 auto;
-  top: 0;
+  top: 5px;
   left 50%;
   transform : translateX(-50%);
   display: flex;
-  width: 90%;
+  align-items : space-between;
+  jutify-content : center;
   height: 8vh;
+  min-width: 200px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(7.6px);
   -webkit-backdrop-filter: blur(7.6px);
+  height: 30px;
+  transition : 1s;
+  & >button{
+    width:0;
+    overflow: hidden;
+    display : none; 
+  }
+  &:hover{
+    height: 8vh;
+    & button{
+      width:50px;
+      display : flex; 
+    }
+  }
+
 `;
 
-const Menu = () => {
-  // let intervalId;
-
+const Menu = ({ streamStatus, handleStream }) => {
   const [displays, setDisplays] = useState([]);
-  const [streamStatus, setStreamStatus] = useState(false);
 
-  useEffect(() => {
-    console.log(displays);
-    console.log(typeof AiOutlinePlayCircle);
-  }, [displays]);
+  // useEffect(() => {
+  //   console.log(displays);
+  //   console.log(typeof AiOutlinePlayCircle);
+  // }, [displays]);
 
   useEffect(() => {
     let intervalId;
@@ -65,10 +79,6 @@ const Menu = () => {
         </Button>
       );
     });
-  };
-
-  const handleStream = () => {
-    setStreamStatus((prev) => !prev);
   };
 
   const takeScreenShot = () => {

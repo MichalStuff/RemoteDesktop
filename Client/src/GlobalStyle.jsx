@@ -7,5 +7,13 @@ export const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
         font-family: 'Arimo', sans-serif;
     }
-
+    *::-webkit-scrollbar {
+        display : none;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #888; 
+      }
+    body{
+        overflow : hidden;
+    }
 `;

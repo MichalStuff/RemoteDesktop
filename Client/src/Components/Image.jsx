@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 const StyedImg = styled.img`
-  max-width: 100%;
-  height: auto;
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
 `;
 
 const Image = ({ src, alt }) => {

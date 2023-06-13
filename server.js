@@ -17,7 +17,7 @@ const io = require('socket.io')(server,{
 
 app.use(cors({
   origin : '*'
-}));
+})); 
 
 let Image
 let CURRENT_DISPALY = 0;
@@ -81,7 +81,14 @@ io.on('connection',(socket)=>{
           console.log(Displays);
           console.log(ratio); 
   }); 
-
+  
+  // socket.on("KeyDown",(data)=>{
+  //   // robot.keyTap(data);
+  //   robot.typeString(data);
+  // });
+  socket.on("letter",(data)=>{
+    robot.typeString(data);
+  })
   socket.on("takeScreenShot",(data)=>{
     screenshot({format : 'jpg', screen : Displays[CURRENT_DISPALY].id || null }).then((img)=>{
       fs.writeFileSync('screemshoot.jpg',img);
