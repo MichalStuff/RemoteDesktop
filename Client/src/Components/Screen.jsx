@@ -9,48 +9,50 @@ import { useState } from "react";
 const StyledScreen = styled.main`
   max-height: 100vh;
 `;
-
+// Render Image
 const Screen = ({ streamStatus }) => {
-  const [image, setImage] = useState(defaultImage);
+  const [image, setImage] = useState(defaultImage); //Imagge state
 
-  const { socket } = useContext(SocketContext);
+  const { socket } = useContext(SocketContext); // Socket instance configured inside context
+  // After response from server set new image
   useEffect(() => {
     socket.on("refresh", (data) => {
-      setImage(`data:image/jpg;base64, ${data}`);
+      setImage(`data:image/jpg;base64, ${data}`); // set new image
     });
     return () => {
       socket.off("refresh");
-      setImage(defaultImage);
+      setImage(defaultImage); // set image to default unmounting
     };
   }, []);
 
   useEffect(() => {
     if (streamStatus === false) {
       setTimeout(() => {
-        setImage(defaultImage);
-      }, [200]);
+        setImage(defaultImage); //set image to default afte delay
+      }, [200]); // delay 200ms
     }
-  }, [streamStatus]);
-
+  }, [streamStatus]); // depending on steam status
+  // send position of mouse on client side display
   const handleMouse = (e) => {
     if (streamStatus) {
-      console.log(
-        `X : ${e.clientX - e.target.offsetLeft} Y : ${
-          e.clientY - e.target.offsetTop + 1
-        }`
-      );
-      console.log(
-        `Width : ${e.target.clientWidth} Height : ${e.target.clientHeight}`
-      );
+      // console.log(
+      //   `X : ${e.clientX - e.target.offsetLeft} Y : ${
+      //     e.clientY - e.target.offsetTop + 1
+      //   }`
+      // );
+      // console.log(
+      //   `Width : ${e.target.clientWidth} Height : ${e.target.clientHeight}`
+      // );
       const MouseData = {
         X: e.clientX - e.target.offsetLeft,
         Y: e.clientY - e.target.offsetTop + 1,
         Width: e.target.clientWidth,
         Height: e.target.clientHeight,
-      };
+      }; // Send Client Data about mouse
       socket.emit("MouseClick", MouseData);
     }
   };
+  // send keyCode to the server
   const handleKeyboard = (e) => {
     e.keyCode === 50 ? null : e.preventDefault();
     if (streamStatus) {

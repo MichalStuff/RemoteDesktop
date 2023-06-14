@@ -13,10 +13,10 @@ const StyledContainer = styled.div`
 `;
 
 export const Home = () => {
-  const [streamStatus, setStreamStatus] = useState(false);
-
+  const [streamStatus, setStreamStatus] = useState(false); // Status of stream [bool]
+  // change stream status
   const handleStream = () => {
-    setStreamStatus((prev) => !prev);
+    setStreamStatus((prev) => !prev); // change stream status
   };
   return (
     <StyledContainer>

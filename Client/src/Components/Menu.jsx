@@ -44,27 +44,25 @@ const StyledMenu = styled.nav`
 `;
 
 const Menu = ({ streamStatus, handleStream }) => {
-  const [displays, setDisplays] = useState([]);
+  const { socket } = useContext(SocketContext); // Socket instance configured inside context
+  const [displays, setDisplays] = useState([]); // [Array] of displays
 
-  // useEffect(() => {
-  //   console.log(displays);
-  //   console.log(typeof AiOutlinePlayCircle);
-  // }, [displays]);
-
+  // Loop of stream
   useEffect(() => {
-    let intervalId;
+    let intervalId; // Interval ID used to end loop
     if (streamStatus !== false) {
+      // check stream status
       intervalId = setInterval(() => {
-        console.log("Streaming");
-        takeScreenShot();
-      }, 50);
+        // console.log("Streaming");
+        takeScreenShot(); // Function that trigger screenshot on server
+      }, 50); // loop is started for every 50 ms
     }
     return () => {
-      console.log("Stop");
-      clearInterval(intervalId);
+      // console.log("Stop");
+      clearInterval(intervalId); // Stop streaming loop
     };
   }, [streamStatus]);
-
+  //Creates Buttons to switch between Monitors, depending on the amount of displays
   const ShowDisplays = () => {
     return displays.map((display, index) => {
       return (
@@ -80,12 +78,11 @@ const Menu = ({ streamStatus, handleStream }) => {
       );
     });
   };
-
+  // Function that trigger screenshot on server
   const takeScreenShot = () => {
     socket.emit("takeScreenShot", "streamStartred");
   };
-  const { socket } = useContext(SocketContext);
-
+  // Update display data
   useEffect(() => {
     socket.on("DispalyData", ([...data]) => {
       setDisplays(data);
