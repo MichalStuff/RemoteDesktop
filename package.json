@@ -6,5 +6,13 @@
     "robotjs": "^0.6.0",
     "screenshot-desktop": "^0.0.0-development",
     "socket.io": "^4.6.1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "scripts": {
+    "client": "cd Client && npm run dev",
+    "server": "nodemon server.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   }
 }
